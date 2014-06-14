@@ -2,7 +2,7 @@
 
 ## Summary
 
-Like smart operators, but better.
+Like `smart operators`, but better.
 
 Provides enhanced editing support for operators in programming languages.
 
