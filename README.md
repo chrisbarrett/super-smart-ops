@@ -27,24 +27,24 @@ build the project.
 To add support for smart operators to a language mode, call the
 `declare-smart-ops' function.
 
-    (declare-super-smart-ops 'asm-mode)
+    (super-smart-ops-configure-for-mode 'asm-mode)
 
 Common arithmetic operators are enable by default. Use the `:rem` keyword
 argument to disable certain operators.
 
-    (declare-super-smart-ops 'asm-mode
+    (super-smart-ops-configure-for-mode 'asm-mode
       :rem '("%" "-"))
 
 Add support for more operators using the `:add` keyword argument.
 
-    (declare-super-smart-ops 'haskell-mode
+    (super-smart-ops-configure-for-mode 'haskell-mode
       :add '("$"))
 
 You can also specify your own custom commands to perform the insertion and
 formatting. `<backspace>` will still work as expected for these operators. Use
 the `:custom` keyword argument to configure these commands.
 
-    (declare-super-smart-ops 'haskell-mode
+    (super-smart-ops-configure-for-mode 'haskell-mode
       ; ...
       :custom
       '(("." . cb-hs:smart-dot)
