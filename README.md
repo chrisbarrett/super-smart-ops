@@ -25,7 +25,7 @@ build the project.
 ## Configuration
 
 To add support for smart operators to a language mode, call the
-`declare-smart-ops` function.
+`super-smart-ops-configure-for-mode` function.
 
 ```lisp
 (super-smart-ops-configure-for-mode 'asm-mode)
