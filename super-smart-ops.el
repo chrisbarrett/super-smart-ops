@@ -43,26 +43,26 @@
 ;; =============
 ;;
 ;; To add support for smart operators to a language mode, call the
-;; `declare-smart-ops' function.
+;; `declare-super-smart-ops' function.
 ;;
-;;     (declare-smart-ops 'asm-mode)
+;;     (declare-super-smart-ops 'asm-mode)
 ;;
 ;; Common arithmetic operators are enable by default. Use the `:rem` keyword
 ;; argument to disable certain operators.
 ;;
-;;     (declare-smart-ops 'asm-mode
+;;     (declare-super-smart-ops 'asm-mode
 ;;       :rem '("%" "-"))
 ;;
 ;; Add support for more operators using the `:add` keyword argument.
 ;;
-;;     (declare-smart-ops 'haskell-mode
+;;     (declare-super-smart-ops 'haskell-mode
 ;;       :add '("$"))
 ;;
 ;; You can also specify your own custom commands to perform the insertion and
 ;; formatting. `<backspace>` will still work as expected for these operators. Use
 ;; the `:custom` keyword argument to configure these commands.
 ;;
-;;     (declare-smart-ops 'haskell-mode
+;;     (declare-super-smart-ops 'haskell-mode
 ;;       ; ...
 ;;       :custom
 ;;       '(("." . cb-hs:smart-dot)
@@ -337,7 +337,7 @@ Useful for setting up keymaps manually."
       (super-smart-ops--maybe-just-one-space-after-operator))))))
 
 ;;;###autoload
-(cl-defun declare-smart-ops (mode &key add rem custom)
+(cl-defun declare-super-smart-ops (mode &key add rem custom)
   "Define the smart operators for the given mode.
 
 - MODE is the mode to add the smart ops for.
