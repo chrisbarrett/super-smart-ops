@@ -317,24 +317,24 @@ Useful for setting up keymaps manually."
    ;; field.
    (super-smart-ops--restrict-to-yas-field
 
-    (cond
-     ((or (super-smart-ops--in-string-or-comment?)
-          ;; Looking at quotation mark?
-          (-contains? '(?\" ?\') (char-after)))
-      (insert op))
+     (cond
+      ((or (super-smart-ops--in-string-or-comment?)
+           ;; Looking at quotation mark?
+           (-contains? '(?\" ?\') (char-after)))
+       (insert op))
 
-     ((-contains? (cl-list* "(" super-smart-ops-list) (super-smart-ops--prev-non-space-char))
-      (super-smart-ops--delete-horizontal-space-non-readonly)
-      (insert op)
-      (super-smart-ops--maybe-just-one-space-after-operator))
+      ((-contains? (cl-list* "(" super-smart-ops-list) (super-smart-ops--prev-non-space-char))
+       (super-smart-ops--delete-horizontal-space-non-readonly)
+       (insert op)
+       (super-smart-ops--maybe-just-one-space-after-operator))
 
-     (t
-      (unless (s-matches? (rx bol (* space) eol)
-                          (buffer-substring (line-beginning-position) (point)))
-        (just-one-space))
+      (t
+       (unless (s-matches? (rx bol (* space) eol)
+                           (buffer-substring (line-beginning-position) (point)))
+         (just-one-space))
 
-      (insert op)
-      (super-smart-ops--maybe-just-one-space-after-operator))))))
+       (insert op)
+       (super-smart-ops--maybe-just-one-space-after-operator))))))
 
 ;;;###autoload
 (cl-defun declare-super-smart-ops (mode &key add rem custom)
