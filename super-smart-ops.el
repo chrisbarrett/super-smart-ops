@@ -1,4 +1,4 @@
-;;; super-smart-ops.el --- Like smart operators, but better.
+;;; super-smart-ops.el --- Like smart operators, but better.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 Chris Barrett
 
@@ -261,10 +261,11 @@ OPS are the smart operators for this mode.
 CUSTOM are custom operator implementations."
   (let ((custom-ops (-map 'car custom)))
     (setq-local super-smart-ops-list (-union ops custom-ops))
-    (--each ops
-      (local-set-key (kbd it) (eval `(super-smart-ops-make-smart-op ,it))))
-    (--each custom
-      (cl-destructuring-bind (op . fn) it
+    (dolist (o ops)
+      (local-set-key (kbd o) (eval `(super-smart-ops-make-smart-op ,o))))
+
+    (dolist (c custom)
+      (cl-destructuring-bind (op . fn) c
         ;; Decorate custom operators to run modification hooks.
         (local-set-key (kbd op) (lambda ()
                                   (interactive "*")
@@ -277,12 +278,15 @@ CUSTOM are custom operator implementations."
 (defmacro super-smart-ops-make-smart-op (str)
   "Return a function that will insert smart operator STR.
 Useful for setting up keymaps manually."
-  (let ((fname (intern (concat "super-smart-op-insert/" str))))
+  (let ((fname (intern (format "super-smart-op-insert/%s" str))))
     `(progn
-       (defun ,fname ()
-         "Auto-generated command.  Inserts a smart operator."
-         (interactive "*")
-         (super-smart-ops-insert ,str))
+       (defun ,fname (&optional no-padding)
+         "Auto-generated command.  Inserts a smart operator.
+If called with a prefix arg, do not insert padding."
+         (interactive "*P")
+         (if no-padding
+             (insert ,str)
+           (super-smart-ops-insert ,str)))
        ',fname)))
 
 ;;;###autoload
@@ -360,8 +364,8 @@ Useful for setting up keymaps manually."
                      (-difference (-union super-smart-ops-list add) rem))))
 
     ;; Set smart ops list for buffers that already exist.
-    (--each (buffer-list)
-      (with-current-buffer it
+    (dolist (b (buffer-list))
+      (with-current-buffer b
         (when (derived-mode-p mode)
           (super-smart-ops--add-smart-ops ops custom))))
 
