@@ -374,22 +374,20 @@ Useful for setting up keymaps manually."
 ;;; Compatibility
 
 (eval-after-load 'smartparens
-  '(progn
-     (defadvice sp-backward-delete-char (around delete-smart-op activate)
-       "Delete the smart operator that was just inserted, including padding."
-       (super-smart-ops--run-with-modification-hooks
-        (or (super-smart-ops-delete-last-op) ad-do-it)))))
+  '(defadvice sp-backward-delete-char (around delete-smart-op activate)
+     "Delete the smart operator that was just inserted, including padding."
+     (super-smart-ops--run-with-modification-hooks
+      (or (super-smart-ops-delete-last-op) ad-do-it))))
 
 (eval-after-load 'evil
-  '(progn
-     (defadvice super-smart-ops-insert (around restrict-to-insert-state activate)
-       "If evil mode is active, only insert in insert state."
-       (cond
-        ((and (true? evil-mode) (evil-insert-state-p))
-         ad-do-it)
-        ((true? evil-mode))
-        (t
-         ad-do-it)))))
+  '(defadvice super-smart-ops-insert (around restrict-to-insert-state activate)
+     "If evil mode is active, only insert in insert state."
+     (cond
+      ((and (true? evil-mode) (evil-insert-state-p))
+       ad-do-it)
+      ((true? evil-mode))
+      (t
+       ad-do-it))))
 
 (provide 'super-smart-ops)
 
