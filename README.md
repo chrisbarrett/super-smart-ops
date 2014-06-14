@@ -82,7 +82,7 @@ Typing '=' adjusts the padding as you'd expect:
 
     1 += |
 
-Deleting backwards (with <backspace>) deletes any trailing padding and the
+Deleting backwards (with `<backspace>`) deletes any trailing padding and the
 last operator:
 
     1 +|
@@ -102,7 +102,7 @@ Typing '+' inserts the operator and adds padding:
 
     1 + |
 
-Deleting backwards (with <backspace>) deletes the operator and its padding,
+Deleting backwards (with `<backspace>`) deletes the operator and its padding,
 ready for your correction.
 
     1|
