@@ -370,8 +370,8 @@ If called with a prefix arg, do not insert padding."
           (super-smart-ops--add-smart-ops ops custom))))
 
     ;; Set smart ops in mode's hook.
-    (add-hook hook `(lambda ()
-                      (super-smart-ops--add-smart-ops ',ops ',custom)))
+    (add-hook hook (lambda ()
+                     (super-smart-ops--add-smart-ops ops custom)))
 
     (list :mode mode :ops ops)))
 
