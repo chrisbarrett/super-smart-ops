@@ -25,33 +25,42 @@ build the project.
 ## Configuration
 
 To add support for smart operators to a language mode, call the
-`declare-smart-ops' function.
+`declare-smart-ops` function.
 
-    (super-smart-ops-configure-for-mode 'asm-mode)
+```lisp
+(super-smart-ops-configure-for-mode 'asm-mode)
+```
 
 Common arithmetic operators are enable by default. Use the `:rem` keyword
 argument to disable certain operators.
 
-    (super-smart-ops-configure-for-mode 'asm-mode
-      :rem '("%" "-"))
+```lisp
+(super-smart-ops-configure-for-mode 'asm-mode
+  :rem '("%" "-"))
+```
 
 Add support for more operators using the `:add` keyword argument.
 
-    (super-smart-ops-configure-for-mode 'haskell-mode
-      :add '("$"))
+```lisp
+(super-smart-ops-configure-for-mode 'haskell-mode
+  :add '("$"))
+```
 
 You can also specify your own custom commands to perform the insertion and
 formatting. `<backspace>` will still work as expected for these operators. Use
 the `:custom` keyword argument to configure these commands.
 
-    (super-smart-ops-configure-for-mode 'haskell-mode
-      ; ...
-      :custom
-      '(("." . cb-hs:smart-dot)
-        ("," . cb-hs:smart-comma)
-        ("|" . cb-hs:smart-pipe)
-        ("#" . cb-hs:smart-hash)
-        (":" . cb-hs:smart-colon)))
+
+```lisp
+(super-smart-ops-configure-for-mode 'haskell-mode
+  ; ...
+  :custom
+  '(("." . cb-hs:smart-dot)
+    ("," . cb-hs:smart-comma)
+    ("|" . cb-hs:smart-pipe)
+    ("#" . cb-hs:smart-hash)
+    (":" . cb-hs:smart-colon)))
+```
 
 
 ## Examples
