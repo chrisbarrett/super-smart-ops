@@ -159,7 +159,7 @@ CUSTOM are custom operator implementations."
 (defmacro super-smart-ops-make-smart-op (str)
   "Return a function that will insert smart operator STR.
 Useful for setting up keymaps manually."
-  (let ((fname (intern (concat "smart-op-insert/" str))))
+  (let ((fname (intern (concat "super-smart-op-insert/" str))))
     `(progn
        (defun ,fname ()
          "Auto-generated command.  Inserts a smart operator."
