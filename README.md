@@ -2,7 +2,8 @@
 
 ## Summary
 
-Like `smart operators`, but better.
+My own spin on the `smart-operators` concept, intended to provide more a more
+convenient editing experience.
 
 Provides enhanced editing support for operators in programming languages.
 
@@ -12,7 +13,7 @@ Provides enhanced editing support for operators in programming languages.
 
 - Customisable for different languages
 
-- Safe to use with Yasnippet.
+- Safe to use with Yasnippet
 
 ## Installing
 
@@ -31,7 +32,7 @@ To add support for smart operators to a language mode, call the
 (super-smart-ops-configure-for-mode 'asm-mode)
 ```
 
-Common arithmetic operators are enable by default. Use the `:rem` keyword
+Common arithmetic operators are enabled by default. Use the `:rem` keyword
 argument to disable certain operators.
 
 ```lisp
@@ -50,7 +51,6 @@ You can also specify your own custom commands to perform the insertion and
 formatting. `<backspace>` will still work as expected for these operators. Use
 the `:custom` keyword argument to configure these commands.
 
-
 ```lisp
 (super-smart-ops-configure-for-mode 'haskell-mode
   ; ...
@@ -62,13 +62,12 @@ the `:custom` keyword argument to configure these commands.
     (":" . cb-hs:smart-colon)))
 ```
 
-
 ## Examples
 
 The examples below use a pipe character ('|') to represent the cursor position.
 
 
-### Example 1
+### Example 1: Intelligent padding
 
 Padding is managed automatically when inserting operators.
 
@@ -92,7 +91,7 @@ Deleting backwards again deletes the last operator and its leading padding:
     1|
 
 
-### Example 2
+### Example 2: Convenient corrections
 
 It's common to mistype an operator, then want to correct it immediately.
 
@@ -108,10 +107,10 @@ ready for your correction.
     1|
 
 
-### Example 3
+### Example 3: Smart behaviour inside parens
 
-Some languages support operator sections. Inserting operators in parens
-behave as you'd want for these cases.
+Some languages support operator sections. To support this, operators are not
+padded when they are the first element in a parenthesised expression.
 
     (|
 
@@ -119,20 +118,20 @@ Typing '+' gives:
 
     (+|
 
-In Haskell for instance, this means that typing </> should be padded in a
-bare code context...
+If there are non-operator chars after the paren padding will be used. This means
+arithmetic still works as you'd expect within parenthesised expressions:
 
-    x </> |
-
-...but will not be padded in parens.
-
-    f (</>|
+    (1 + |
 
 
 ## Contributing
 
-Yes, please do! See CONTRIBUTING.md for guidelines.
+Yes, please do! See [CONTRIBUTING][] for guidelines.
 
 ## License
 
-See COPYING. Copyright (c) 2014 Chris Barrett.
+See [COPYING][]. Copyright (c) 2014 Chris Barrett.
+
+
+[COPYING]: ./COPYING
+[CONTRIBUTING]: ./CONTRIBUTING.md
