@@ -275,19 +275,23 @@ CUSTOM are custom operator implementations."
 ;;; Public
 
 ;;;###autoload
-(defmacro super-smart-ops-make-smart-op (str)
+(defun super-smart-ops-make-smart-op (str)
   "Return a function that will insert smart operator STR.
-Useful for setting up keymaps manually."
+Useful for setting up keymaps manually.
+
+As a side-effect, this procedure will define a named function
+that will insert the smart op."
+  (cl-assert (not (s-matches? (rx space) str)))
   (let ((fname (intern (format "super-smart-op-insert/%s" str))))
-    `(progn
-       (defun ,fname (&optional no-padding)
-         "Auto-generated command.  Inserts a smart operator.
+    (unless (fboundp fname)
+      (eval `(defun ,fname (&optional no-padding)
+               "Auto-generated command.  Inserts a smart operator.
 If called with a prefix arg, do not insert padding."
-         (interactive "*P")
-         (if no-padding
-             (insert ,str)
-           (super-smart-ops-insert ,str)))
-       ',fname)))
+               (interactive "*P")
+               (if no-padding
+                   (insert ,str)
+                 (super-smart-ops-insert ,str)))))
+    fname))
 
 ;;;###autoload
 (defun super-smart-ops-delete-last-op ()
