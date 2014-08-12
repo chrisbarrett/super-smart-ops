@@ -188,12 +188,12 @@ Each function takes the number of characters removed as an argument."
 
 (defun super-smart-ops--delete-horizontal-space-non-readonly ()
   "Delete horizontal space around point that is not read-only."
-  (while (and (not (eobp))
+  (while (and (not (eolp))
               (s-matches? (rx space) (char-to-string (char-after)))
               (not (get-char-property (point) 'read-only)))
     (forward-char 1))
 
-  (while (and (not (bobp))
+  (while (and (not (bolp))
               (s-matches? (rx space) (char-to-string (char-before)))
               (not (get-char-property (1- (point)) 'read-only)))
     (delete-char -1)))
@@ -202,10 +202,12 @@ Each function takes the number of characters removed as an argument."
   "Insert a trailing space unless:
 - the next char is an operator
 - we are in a parenthesised operator."
-  (unless (or (and (not (eolp))
-                   (-contains? super-smart-ops-list (char-to-string (char-after))))
-              (thing-at-point-looking-at
-               (eval `(rx "(" (+ (or ,@super-smart-ops-list)) ")"))))
+  (unless (or
+           ;; next char is a smart op
+           (and (not (eolp)) (-contains? super-smart-ops-list (char-to-string (char-after))))
+           ;; at end of parens
+           (thing-at-point-looking-at
+            (eval `(rx "(" (+ (or ,@super-smart-ops-list)) ")"))))
     (just-one-space)))
 
 (defmacro super-smart-ops--run-with-modification-hooks (&rest body)
