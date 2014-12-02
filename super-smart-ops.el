@@ -393,9 +393,9 @@ If called with a prefix arg, do not insert padding."
   '(defadvice super-smart-ops-insert (around restrict-to-insert-state activate)
      "If evil mode is active, only insert in insert state."
      (cond
-      ((and (true? evil-mode) (evil-insert-state-p))
+      ((and (featurep 'evil-mode) (evil-insert-state-p))
        ad-do-it)
-      ((true? evil-mode))
+      ((featurep 'evil-mode))
       (t
        ad-do-it))))
 
