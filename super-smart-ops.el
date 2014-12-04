@@ -327,24 +327,32 @@ If called with a prefix arg, do not insert padding."
    ;; field.
    (super-smart-ops--restrict-to-yas-field
 
-     (cond
-      ((or (super-smart-ops--in-string-or-comment?)
-           ;; Looking at quotation mark?
-           (-contains? '(?\" ?\') (char-after)))
-       (insert op))
+     ;; If point is just before a closing bracket with padding, narrow to
+     ;; current position to preserve that padding.
+     (save-restriction
+       (when (s-matches? (rx bol (+ space) (or "]" ")" "}"))
+                         (buffer-substring (point) (line-end-position)))
+         (narrow-to-region (line-beginning-position) (point)))
 
-      ((-contains? (cl-list* "(" super-smart-ops-list) (super-smart-ops--prev-non-space-char))
-       (super-smart-ops--delete-horizontal-space-non-readonly)
-       (insert op)
-       (super-smart-ops--maybe-just-one-space-after-operator))
+       ;; Perform insertion.
+       (cond
+        ((or (super-smart-ops--in-string-or-comment?)
+             ;; Looking at quotation mark?
+             (-contains? '(?\" ?\') (char-after)))
+         (insert op))
 
-      (t
-       (unless (s-matches? (rx bol (* space) eol)
-                           (buffer-substring (line-beginning-position) (point)))
-         (just-one-space))
+        ((-contains? (cl-list* "(" super-smart-ops-list) (super-smart-ops--prev-non-space-char))
+         (super-smart-ops--delete-horizontal-space-non-readonly)
+         (insert op)
+         (super-smart-ops--maybe-just-one-space-after-operator))
 
-       (insert op)
-       (super-smart-ops--maybe-just-one-space-after-operator))))))
+        (t
+         (unless (s-matches? (rx bol (* space) eol)
+                             (buffer-substring (line-beginning-position) (point)))
+           (just-one-space))
+
+         (insert op)
+         (super-smart-ops--maybe-just-one-space-after-operator)))))))
 
 ;;;###autoload
 (cl-defun super-smart-ops-configure-for-mode (mode &key add rem custom)
