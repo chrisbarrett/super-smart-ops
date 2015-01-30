@@ -240,21 +240,6 @@ shorter, call `super-smart-ops-text-removed-functions'."
        (overlay-buffer yas--active-field-overlay)
        (overlay-get yas--active-field-overlay 'yas--field)))
 
-(defmacro super-smart-ops--restrict-to-yas-field (&rest body)
-  "Narrow the buffer to the current active yasnippet field and execute BODY.
-If no field is active, no narrowing will take place."
-  (declare (indent 0))
-  (let ((beg (cl-gensym))
-        (end (cl-gensym)))
-    `(save-restriction
-       (when (and (featurep 'yasnippet) (super-smart-ops--yas-current-field))
-         (let ((,beg (-when-let (field (super-smart-ops--yas-current-field))
-                       (marker-position (yas--field-start field))))
-               (,end (-when-let (field (super-smart-ops--yas-current-field))
-                       (marker-position (yas--field-end field)))))
-           (narrow-to-region ,beg ,end)))
-       ,@body)))
-
 (defun super-smart-ops--add-smart-ops (ops custom)
   "Apply custom operators in the current buffer.
 
@@ -322,37 +307,33 @@ If called with a prefix arg, do not insert padding."
   "Insert a smart operator OP, unless we're in a string or comment."
 
   (super-smart-ops--run-with-modification-hooks
-   ;; Narrow to the current active snippet field if yasnippet is active. This
-   ;; prevents errors when attempting to delete whitespace outside the current
-   ;; field.
-   (super-smart-ops--restrict-to-yas-field
 
-     ;; If point is just before a closing bracket with padding, narrow to
-     ;; current position to preserve that padding.
-     (save-restriction
-       (when (s-matches? (rx bol (+ space) (or "]" ")" "}"))
-                         (buffer-substring (point) (line-end-position)))
-         (narrow-to-region (line-beginning-position) (point)))
+   ;; If point is just before a closing bracket with padding, narrow to
+   ;; current position to preserve that padding.
+   (save-restriction
+     (when (s-matches? (rx bol (+ space) (or "]" ")" "}"))
+                       (buffer-substring (point) (line-end-position)))
+       (narrow-to-region (line-beginning-position) (point)))
 
-       ;; Perform insertion.
-       (cond
-        ((or (super-smart-ops--in-string-or-comment?)
-             ;; Looking at quotation mark?
-             (-contains? '(?\" ?\') (char-after)))
-         (insert op))
+     ;; Perform insertion.
+     (cond
+      ((or (super-smart-ops--in-string-or-comment?)
+           ;; Looking at quotation mark?
+           (-contains? '(?\" ?\') (char-after)))
+       (insert op))
 
-        ((-contains? (cl-list* "(" super-smart-ops-list) (super-smart-ops--prev-non-space-char))
-         (super-smart-ops--delete-horizontal-space-non-readonly)
-         (insert op)
-         (super-smart-ops--maybe-just-one-space-after-operator))
+      ((-contains? (cl-list* "(" super-smart-ops-list) (super-smart-ops--prev-non-space-char))
+       (super-smart-ops--delete-horizontal-space-non-readonly)
+       (insert op)
+       (super-smart-ops--maybe-just-one-space-after-operator))
 
-        (t
-         (unless (s-matches? (rx bol (* space) eol)
-                             (buffer-substring (line-beginning-position) (point)))
-           (just-one-space))
+      (t
+       (unless (s-matches? (rx bol (* space) eol)
+                           (buffer-substring (line-beginning-position) (point)))
+         (just-one-space))
 
-         (insert op)
-         (super-smart-ops--maybe-just-one-space-after-operator)))))))
+       (insert op)
+       (super-smart-ops--maybe-just-one-space-after-operator))))))
 
 ;;;###autoload
 (cl-defun super-smart-ops-configure-for-mode (mode &key add rem custom)

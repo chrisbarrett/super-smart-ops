@@ -13,8 +13,6 @@ Provides enhanced editing support for operators in programming languages.
 
 - Customisable for different languages
 
-- Safe to use with Yasnippet
-
 ## Installing
 
 You will need Emacs 24+, `make` and [Cask](https://github.com/cask/cask) to
