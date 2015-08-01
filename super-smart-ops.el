@@ -249,7 +249,7 @@ CUSTOM are custom operator implementations."
   (let ((custom-ops (-map 'car custom)))
     (setq-local super-smart-ops-list (-union ops custom-ops))
     (dolist (o ops)
-      (local-set-key (kbd o) (eval `(super-smart-ops-make-smart-op ,o))))
+      (local-set-key (kbd o) (eval `(super-smart-ops-make-smart-op ,o t t))))
 
     (dolist (c custom)
       (cl-destructuring-bind (op . fn) c
@@ -262,7 +262,7 @@ CUSTOM are custom operator implementations."
 ;;; Public
 
 ;;;###autoload
-(defun super-smart-ops-make-smart-op (str)
+(defun super-smart-ops-make-smart-op (str pad-front? pad-back?)
   "Return a function that will insert smart operator STR.
 Useful for setting up keymaps manually.
 
@@ -277,7 +277,7 @@ If called with a prefix arg, do not insert padding."
                (interactive "*P")
                (if no-padding
                    (insert ,str)
-                 (super-smart-ops-insert ,str)))))
+                 (super-smart-ops-insert ,str ,pad-front? ,pad-back?)))))
     fname))
 
 ;;;###autoload
@@ -303,7 +303,7 @@ If called with a prefix arg, do not insert padding."
          t)))))
 
 ;;;###autoload
-(defun super-smart-ops-insert (op)
+(defun super-smart-ops-insert (op pad-front? pad-back?)
   "Insert a smart operator OP, unless we're in a string or comment."
 
   (super-smart-ops--run-with-modification-hooks
@@ -328,12 +328,14 @@ If called with a prefix arg, do not insert padding."
        (super-smart-ops--maybe-just-one-space-after-operator))
 
       (t
-       (unless (s-matches? (rx bol (* space) eol)
-                           (buffer-substring (line-beginning-position) (point)))
-         (just-one-space))
+       (when pad-front?
+         (unless (s-matches? (rx bol (* space) eol)
+                             (buffer-substring (line-beginning-position) (point)))
+           (just-one-space)))
 
        (insert op)
-       (super-smart-ops--maybe-just-one-space-after-operator))))))
+       (when pad-back?
+         (super-smart-ops--maybe-just-one-space-after-operator)))))))
 
 ;;;###autoload
 (cl-defun super-smart-ops-configure-for-mode (mode &key add rem custom)
