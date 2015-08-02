@@ -328,10 +328,11 @@ If called with a prefix arg, do not insert padding."
        (super-smart-ops--maybe-just-one-space-after-operator))
 
       (t
-       (when pad-front?
-         (unless (s-matches? (rx bol (* space) eol)
-                             (buffer-substring (line-beginning-position) (point)))
-           (just-one-space)))
+       (unless (s-matches? (rx bol (* space) eol)
+                           (buffer-substring (line-beginning-position) (point)))
+         (if pad-front?
+             (just-one-space)
+           (delete-horizontal-space)))
 
        (insert op)
        (when pad-back?
